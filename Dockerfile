@@ -4,12 +4,17 @@ FROM openjdk:17-jdk-slim AS build
 # Establecer el directorio de trabajo
 WORKDIR /app
 
-# Copiar el Maven Wrapper y el archivo pom.xml
+# Copiar solo el archivo pom.xml primero para aprovechar el caché de Docker
+COPY pom.xml . 
+
+# Copiar mvnw y .mvn (estos son necesarios para Maven Wrapper)
 COPY mvnw . 
 COPY .mvn .mvn
-COPY pom.xml .
 
-# Descargar las dependencias de Maven
+# Dar permisos de ejecución a mvnw
+RUN chmod +x mvnw
+
+# Descargar las dependencias de Maven (esto se cacheará para no descargarlo cada vez)
 RUN ./mvnw dependency:go-offline
 
 # Copiar el código fuente
@@ -17,9 +22,6 @@ COPY src /app/src
 
 # Ejecutar el build de Maven
 RUN ./mvnw clean package -DskipTests
-
-# Verificar si el archivo .jar está presente en el directorio target
-RUN ls /app/target
 
 # Crear la imagen final con el artefacto compilado
 FROM openjdk:17-jdk-slim
