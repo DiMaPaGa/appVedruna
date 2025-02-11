@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: micro01
+  data:
+    mongodb:
+      uri: mongodb+srv://root:root@cluster0.yu5wt.mongodb.net/VedrunaApp?retryWrites=true&w=majority&appName=Cluster0
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+app:
+  admin-email: "diapasgar@gmail.com"
+
+springdoc:
+  api-docs:
+    enable: true
+    path: /v3/api-docs
+  swagger-ui:
+    path: /
